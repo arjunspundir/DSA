@@ -1,0 +1,50 @@
+class DisjointSet{
+    public static ArrayList<Integer> rank=new ArrayList<>();
+    public static ArrayList<Integer> parent=new ArrayList<>();
+    DisjointSet(int n){
+        for(int i=0;i<=n;i++){
+            rank.add(0);
+            parent.add(i);
+        }
+    }
+    public void createSet(ArrayList<ArrayList<Integer>>edges){
+        for(int i=0;i<edges.size();i++){
+            int a,b;
+            a=edges.get(i).get(0);
+            b=edges.get(i).get(1);
+            if(parent.get(a)==parent.get(b))
+              continue;
+            if(rank.get(parent.get(a))<rank.get(parent.get(b))){
+                parent.set(parent.get(a),parent.get(b));
+            }
+            else if(rank.get(parent.get(a))>rank.get(parent.get(b))){
+                parent.set(parent.get(b),parent.get(a));
+            }
+            else{
+                parent.set(parent.get(b),parent.get(a));
+                rank.set(parent.get(a),rank.get(parent.get(a))+1);
+            }
+        }
+    }
+    public void unionByRank(int u, int v) {
+        int ulp_u = findParent(u);
+        int ulp_v = findParent(v);
+        if (ulp_u == ulp_v) return;
+        if (rank.get(ulp_u) < rank.get(ulp_v)) {
+            parent.set(ulp_u, ulp_v);
+        } else if (rank.get(ulp_v) < rank.get(ulp_u)) {
+            parent.set(ulp_v, ulp_u);
+        } else {
+            parent.set(ulp_v, ulp_u);
+            int rankU = rank.get(ulp_u);
+            rank.set(ulp_u, rankU + 1);
+        }
+    }
+
+    public int findParent(int n){
+        if(parent.get(n) == n )
+         return n;
+        parent.set(n,findParent(parent.get(n)));
+        return parent.get(n);
+    }
+}
