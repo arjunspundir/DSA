@@ -1,0 +1,106 @@
+class SegmentTree {
+  //Store Sum
+  int arr[];
+  int copy[];
+  SegmentTree(int n,int nums[]){
+    arr=new int[2*n+1];
+    copy=new int[2*n+1];
+    buildTree(0,0,n-1,arr,nums);
+  }
+  public void buildTree(int ind,int l,int h,int arr[],int nums[]){
+    if(l==h){
+      arr[ind]=nums[l];
+      return ;
+    }
+    int mid=(l+h)>>1;
+    buildTree(2*ind+1, l, mid, arr, nums);
+    buildTree(2*ind+2, mid+1, h, arr, nums);
+    arr[ind]=arr[ind*2+1]+arr[ind*2+2];
+  }
+public int rangeSum(int ind , int low,int high,int i,int j){
+  
+  arr[ind] +=(high-low+1)*copy[ind];
+  if(2*ind+1<arr.length)
+    copy[ind*2+1] +=copy[ind];
+  if(2*ind+2<arr.length)
+    copy[ind*2+2] +=copy[ind];
+  
+  copy[ind]=0;
+
+  if(i<=low && j>=high)
+    return arr[ind];
+  
+    if(i>high || j<low)
+     return 0;
+  
+   int mid=(low+high)>>1;
+  
+   int left=0,right=0;
+  
+   left=rangeSum(ind*2+1, low, mid, i, j);
+  
+   right=rangeSum(ind*2+2, mid+1, high, i, j);
+  
+   return left + right ;
+
+}
+
+public void pointInrease(int ind , int low,int high,int pos,int val){
+  
+  arr[ind] +=(high-low+1)*copy[ind];
+  if(2*ind+1<arr.length)
+    copy[ind*2+1] +=copy[ind];
+  if(2*ind+2<arr.length)
+    copy[ind*2+2] +=copy[ind];
+  
+  copy[ind]=0;
+
+  if(low==high){
+    arr[ind] += val;
+    return ;
+  }  
+   int mid=(low+high)>>1;
+   if(mid>=pos)
+    pointInrease(ind*2+1, low, mid, pos, val);
+   else
+   pointInrease(ind*2+2, mid+1, high, pos, val);
+   
+   arr[ind] =arr[ind*2+1]+arr[ind*2+2];
+
+  }
+  public void rangeInrease(int ind , int low,int high,int i,int j,int val){
+    
+  arr[ind] +=(high-low+1)*copy[ind];
+  if(2*ind+1<arr.length)
+    copy[ind*2+1] +=copy[ind];
+  if(2*ind+2<arr.length)
+    copy[ind*2+2] +=copy[ind];
+  
+  copy[ind]=0;
+   
+  if(i>high || j<low)
+     return ;
+   
+  int mid=(low+high)>>1;
+
+  if(i<=low && j>=high){
+    
+    arr[ind] +=(high-low+1)*val ;
+    
+    if(2*ind+1<arr.length)
+      copy[ind*2+1] +=val;
+    
+    if(2*ind+2<arr.length)
+      copy[ind*2+2] +=val;
+
+    return ;
+
+  }
+  rangeInrease(ind*2 +1, low, mid, i, j, val);
+  rangeInrease(ind*2 +2, mid+1, high, i, j, val);
+  
+  arr[ind] = arr[2*ind+1] + arr[2*ind+2];    
+     
+    }
+
+}
